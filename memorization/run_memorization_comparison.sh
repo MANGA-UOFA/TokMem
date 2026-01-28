@@ -13,9 +13,9 @@ CONFIGS=(
     "8 128 2"
     "8 128 5"
 )
-POSITIONS=("before" "after")
+POSITIONS=("before" "after") # before: the task identifier is before the embeddings, after: the task identifier is after the embeddings
 NUM_RUNS=5
-ID_LENGTH=1
+ID_LENGTH=1 # the length of the task identifier
 
 # Create results directory
 TIMESTAMP=$(date +%Y%m%d_%H%M%S)

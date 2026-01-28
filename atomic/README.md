@@ -1,61 +1,29 @@
 # Atomic Memory Recall
 
-Atomic task calling using reserved special tokens as task identifiers. The model overrides embedding/lm_head behavior only for the reserved tokens, keeping the base LM otherwise frozen.
+Atomic task learning using reserved special tokens as task identifiers. Each token encodes a specific task's procedural knowledge.
 
-## Contents
+## Dataset
 
-- `task_model.py` — TaskCallingModel using reserved special tokens for tasks.
-- `task_dataset.py` — dataset and collation utilities for task calling of the SNI dataset.
-- `task_training.py` — training loop helpers and logging.
-- `natural_instructions_eval.py` — evaluation on Natural Instructions‑style data.
-- `analyze_task_similarity.py` — utilities to analyze learned task token geometry.
-- `test_lora_baseline.sh` — example tests for finetuning and replay memory baselines.
-- `test_tokmem.sh` — example tests for TokMem and its decoupled embeddings variant.
-- `test_sbert_retriever.py` — retrieval helper comparison.
+The project uses the Natural Instructions (Super-NaturalInstructions) dataset. For instructions on how to download and set up the dataset, please see the [Dataset README](natural-instructions-2.8/README.md).
 
-## Setup
+## Configuration
 
-First, download the SNI dataset from the [Natural Instructions dataset](https://github.com/allenai/natural-instructions) and place it in the `atomic` directory.
+The primary entry point is `main_tokmem.sh`. You can configure the training and evaluation by modifying the following key arguments in the script:
 
-```bash
-pip install -r ../requirements.txt
-# Optional extras used in some scripts
-pip install peft
-```
+- `--num_tasks`: Total number of tasks to load from the Natural Instructions dataset for training and testing.
+- `--model_name`: The transformer model to use. Supports Llama 3 and Qwen 2.5 models (e.g., `meta-llama/Llama-3.2-3B-Instruct` or `Qwen/Qwen2.5-7B-Instruct`).
+- `--train_size`, `--val_size`, `--test_size`: Number of instances per task for training, validation, and testing.
 
 ## Usage
 
-- Replicate baselines by running the provided scripts:
-  - LoRA + replay memory baselines:
-    ```bash
-    bash test_lora_baseline.sh
-    ```
-  - TokMem and its decoupled embeddings variant:
-    ```bash
-    bash test_tokmem.sh
-    ```
-  - Tip: adjust `CUDA_VISIBLE_DEVICES` and any paths inside the scripts as needed for your setup.
+### TokMem
+Main experiment using special tokens:
+```bash
+bash main_tokmem.sh
+```
 
-- Key arguments used by these scripts:
-
-  **Common arguments (both scripts):**
-  - `--num_tasks`: number of tasks to sample/train.
-  - `--train_size`, `--val_size`, `--test_size`: dataset sizes per task.
-  - `--model_name`: Hugging Face model identifier to load.
-  - `--num_epochs`: number of training epochs.
-  - `--batch_size`: per-step micro-batch size. Effective batch size = `batch_size × gradient_accumulation_steps`.
-  - `--gradient_accumulation_steps`: steps to accumulate before an optimizer update.
-  - `--max_length`: maximum sequence length fed to the model.
-  - `--max_instruction_tokens`: maximum tokens for the instruction segment.
-  - `--validate_every_n_steps`: frequency (in optimizer steps) to run validation.
-
-  **LoRA baseline specific arguments:**
-  - `--lr`: learning rate.
-  - `--lora_r`, `--lora_alpha`, `--lora_dropout`: LoRA hyperparameters.
-  - `--target_modules`: which attention/projection modules to adapt with LoRA.
-  - `--save_path`: path to save checkpoints/outputs.
-  - `--continual_replay`: enable replay memory baseline (flag, no value).
-  - `--block_size`: size of each replay block/chunk.
-  - `--continual_replay_ratio`: fraction of replayed samples mixed with current task data.
-
-
+### LoRA Baseline
+Sequential training with LoRA and optional continual replay:
+```bash
+bash main_lora_baseline.sh
+```

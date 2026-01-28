@@ -1,8 +1,5 @@
 #!/bin/bash
-export CUDA_VISIBLE_DEVICES=5
-
-# LoRA Baseline - Flexible N-round sequential training script
-# Uses standard LoRA fine-tuning instead of tool-specific embeddings
+export CUDA_VISIBLE_DEVICES=0
 
 # Default parameters
 NUM_ROUNDS=2
@@ -20,7 +17,7 @@ START_TOOL=1
 TRAIN_SIZE=5000
 TEST_SIZE=500
 
-REINIT_LORA=true
+REINIT_LORA=true # true: reinitialize the LoRA adapters after each round
 EVAL_ALL_PREVIOUS=false
 SAVE_CHECKPOINTS=false
 

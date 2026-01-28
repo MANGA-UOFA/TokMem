@@ -1,8 +1,4 @@
 #!/bin/bash
-
-# Quick batch script to test different numbers of training samples
-# Usage: ./run_training_samples_test.sh
-
 # =============================================================================
 # CONFIGURATION SECTION - Modify these variables as needed
 # =============================================================================
@@ -12,8 +8,8 @@ CUDA_DEVICE="6"
 
 # Model configuration
 MODEL_NAME="meta-llama/Llama-3.2-3B-Instruct"
-PROMPT_POSITION="infix"
-USE_CHAT_TEMPLATE="--use_chat_template"
+PROMPT_POSITION="infix" # infix: the task identifier is in the middle of the prompt, prefix: the task identifier is at the beginning of the prompt
+USE_CHAT_TEMPLATE="--use_chat_template" # use the chat template for the prompt
 BATCH_SIZE=4
 LEARNING_RATE=5e-3
 
@@ -69,7 +65,7 @@ run_training() {
     echo "Running training with $num_samples training samples"
     echo "Log file: $log_file"
     
-    python main.py \
+    python main_gsm8k.py \
         --prompt_position "$PROMPT_POSITION" \
         $USE_CHAT_TEMPLATE \
         --batch_size "$BATCH_SIZE" \

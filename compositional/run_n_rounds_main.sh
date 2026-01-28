@@ -1,14 +1,11 @@
 #!/bin/bash
-export CUDA_VISIBLE_DEVICES=6
-
-# Flexible N-round sequential training script
-# Automatically generates rounds based on parameters
+export CUDA_VISIBLE_DEVICES=0
 
 # Default parameters
 NUM_ROUNDS=2
 TOOLS_PER_ROUND=50
 SAMPLES_PER_TOOL=50
-EPOCHS_PER_ROUND='1,3'  # Can be single value or comma-separated list (e.g., "3,5,2")
+EPOCHS_PER_ROUND='1,3' # the number of epochs for each round, comma-separated list
 TRAIN_MAX_CALLS=4
 TEST_MAX_CALLS=4
 TRAIN_MAX_CALLS_PER_ROUND="4,4"
@@ -23,11 +20,10 @@ TEST_SIZE=500
 CURRICULUM_LEARNING=false
 EVAL_ALL_PREVIOUS=false
 RENORM_ACTIVE_TOOLS=true
-FREEZE_LORA_AFTER_FIRST=true
+FREEZE_LORA_AFTER_FIRST=true #true: the first round serves as the adaptation phase
 USE_LORA=true
 SAVE_CHECKPOINTS=false
 
-# All configuration is done via these variables - no command line arguments
 
 # Parse epochs per round (can be single value or comma-separated list)
 IFS=',' read -ra EPOCHS_ARRAY <<< "$EPOCHS_PER_ROUND"

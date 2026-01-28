@@ -618,7 +618,7 @@ def main():
     parser.add_argument("--lora_dropout", type=float, default=0.1,
                         help="LoRA dropout rate (default: 0.1)")
     parser.add_argument("--lora_target_modules", type=str, 
-                        default="q_proj,v_proj,o_proj,gate_proj,up_proj,down_proj",
+                        default="q_proj,v_proj",
                         help="Target modules for LoRA")
     
     # Data paths

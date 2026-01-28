@@ -1,47 +1,81 @@
 # TokMem: Tokenized Procedural Memory for LLMs
 
-This repository implements **TokMem**, a method that enables large language models to acquire and recall procedural knowledges. The approach freezes the base LM while training only memory token embeddings.
-
-## Three Experimental Tracks
-
-### **Atomic Memory Recall** (`atomic/`)
-Atomic task learning using reserved special tokens as task identifiers. Each token encodes a specific task's procedural knowledge.
-- **What it does**: Train task-specific embeddings for individual tasks while keeping the base LM frozen
-- **Use case**: Learning individual tasks without catastrophic forgetting
-- **Quick start**: `cd atomic && bash test_tokmem.sh`
-
-### **Compositional Memory Recall** (`compositional/`)
-Multi-tool function calling with sequential training across disjoint tool ranges. Supports both TokMem embeddings and LoRA baselines for continual learning.
-- **What it does**: Learn to call multiple tools/functions in sequence across training rounds
-- **Use case**: Compositional reasoning and tool use without interference
-- **Quick start**: `cd compositional && bash run_n_rounds_main.sh` (TokMem) or `bash run_n_rounds_lora.sh` (LoRA baseline)
-
-### **Embedding Capacity Ablation** (`memorization/`)
-Systematic ablation experiments comparing TokMem vs prefix tuning approaches. Tests embedding capacity, memorization performance, and generalization on structured tasks.
-- **What it does**: Compare embedding positions, dimensions, and training dynamics between approaches
-- **Use case**: Analyze memorization capacity and embedding behavior differences
-- **Quick start**: `cd memorization && bash run_memorization_comparison.sh` (memorization tasks) or `bash run_training_samples_test.sh` (GSM8K)
-
-The code targets Hugging Face Transformers models (e.g., Llama and Qwen) and PyTorch.
+This repository implements **TokMem**, a method that enables large language models (LLMs) to acquire and recall procedural knowledge through tokenized memory. By freezing the base LM and training only specialized memory token embeddings, TokMem provides a modular and efficient way to learn new tasks without catastrophic forgetting.
 
 ## Key Features
 
-- **Frozen Base LM**: Only memory token embeddings and projections are trained
-- **No Catastrophic Forgetting**: New tasks/tools don't interfere with previously learned ones  
-- **Efficient**: Much smaller parameter updates compared to full fine-tuning
-- **Modular**: Easy to add new tasks/tools without retraining existing ones
-- **Baseline Comparisons**: Includes LoRA fine-tuning, replay memory baselines, in-context learning (ICL) baselines, and no-training baselines
+- **Frozen Base LM**: Only memory token embeddings and lightweight projections are trained, preserving the original model's capabilities.
+- **Zero Interference**: New tasks or tools are assigned unique tokens, preventing them from interfering with previously learned knowledge.
+- **High Efficiency**: Significantly smaller parameter updates compared to full fine-tuning or LoRA.
+- **Modular & Scalable**: Easily add new tasks or tools by simply training new token embeddings without retraining the entire system.
+- **Comprehensive Baselines**: Includes LoRA fine-tuning, replay memory, in-context learning (ICL), and zero-shot baselines for comparison.
 
-**Models**: Supports Hugging Face transformers (tested on Llama-3.2-1B/3B-Instruct, qwen-2.5-0.5B-Instruct)
-- GPU with BF16/FP16 support recommended
-- Adjust `--dtype` and CUDA device settings in scripts as needed
+---
 
-## Reproducibility
+## Experimental Tracks
 
-- Scripts include seed settings for deterministic results
-- For full reproducibility, enable CUDA determinism in your environment
-- Results may vary slightly across different GPU architectures
+### 1. Atomic Memory Recall (`atomic/`)
+Focuses on learning individual, distinct tasks using reserved special tokens as unique task identifiers.
+- **Dataset**: [Natural Instructions (v2.8)](https://github.com/allenai/natural-instructions).
+- **Goal**: Train task-specific embeddings that encode the procedural knowledge required for hundreds of diverse NLP tasks.
+- **Key Methods**:
+  - `TokMem`: Training specialized embeddings for each task.
+  - `LoRA Baseline`: Sequential training with LoRA and optional experience replay.
+- **Quick Start**:
+  ```bash
+  cd atomic && bash main_tokmem.sh
+  ```
 
-## License & Citation
+### 2. Compositional Memory Recall (`compositional/`)
+Evaluates the model's ability to learn and compose multiple tool-calling functions sequentially.
+- **Dataset**: **XLAM (APIGen)**. Uses tools 1-50 for adaptation and tools 51-100 for evaluation.
+- **Goal**: Assess how well the model can learn new tool-calling capabilities across disjoint training rounds.
+- **Key Methods**:
+  - `TokMem`: Sequential training with an initial adaptation phase.
+  - `LoRA Baseline`: Standard sequential fine-tuning with optional replay buffers.
+  - `ICL Baseline`: Zero-shot/Few-shot evaluation with RAG-based tool retrieval.
+- **Quick Start**:
+  ```bash
+  cd compositional && bash run_n_rounds_main.sh
+  ```
 
-- Anonymized for review.
+### 3. Embedding Capacity Ablation (`memorization/`)
+Stress tests to compare **TokMem** against **Prefix memory embeddings**.
+- **Experiments**:
+  - **GSM8K Reasoning**: Testing multi-step reasoning and structured output maintenance.
+  - **Memory Stress Test**: Using PG-19 and Fanfics datasets to measure token compression and reconstruction accuracy.
+- **Metrics**: Reconstruction accuracy, perplexity.
+- **Quick Start**:
+  ```bash
+  cd memorization && bash run_memorization_comparison.sh
+  ```
+
+---
+
+## Getting Started
+
+### Prerequisites
+- Python 3.9+
+- CUDA-enabled GPU (BF16/FP16 support recommended)
+- `pip install -r requirements.txt`
+
+### Supported Models
+The codebase is tested for Hugging Face Transformers:
+- **Llama 3.1** (8B Instruct)
+- **Llama 3.2** (1B, 3B Instruct)
+- **Qwen 2.5** (0.5B Instruct)
+
+---
+
+## Citation
+
+If you find this work useful, please cite:
+
+```bibtex
+@article{wu2025tokmem,
+  title={TokMem: Tokenized Procedural Memory for Large Language Models},
+  author={Wu, Zijun and Hao, Yongchang and Mou, Lili},
+  journal={arXiv preprint arXiv:2510.00444},
+  year={2025}
+}
+```

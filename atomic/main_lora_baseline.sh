@@ -8,13 +8,13 @@ python main_lora_baseline.py \
     --test_size 50 \
     --model_name "meta-llama/Llama-3.2-3B-Instruct" \
     --num_epochs 1 \
-    --batch_size 2 \
-    --gradient_accumulation_steps 2 \
+    --batch_size 1 \
+    --gradient_accumulation_steps 4 \
     --max_length 1280 \
     --max_instruction_tokens 1024 \
     --eval_batch_size 8 \
     --validate_every_n_steps 1000 \
-    --lr 1e-4 \
+    --lr 5e-5 \
     --lora_r 8 \
     --lora_alpha 32 \
     --lora_dropout 0.1 \

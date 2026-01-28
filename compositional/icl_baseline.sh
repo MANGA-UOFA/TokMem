@@ -1,7 +1,5 @@
 #!/bin/bash
-export CUDA_VISIBLE_DEVICES=1
-
-# ICL Baseline for tools 51-100
+export CUDA_VISIBLE_DEVICES=0
 
 # Parameters
 TOOLS="51-100"
@@ -10,7 +8,7 @@ TRAIN_SIZE=5000
 TEST_SIZE=500
 TRAIN_MAX_CALLS=4
 TEST_MAX_CALLS=4
-MODEL="meta-llama/Llama-3.2-1B-Instruct"
+MODEL="meta-llama/Llama-3.2-3B-Instruct"
 BATCH_SIZE=16
 
 # RAG Configuration

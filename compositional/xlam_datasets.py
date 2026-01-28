@@ -1,12 +1,6 @@
 #!/usr/bin/env python3
 """
 Unified XLAM Dataset Processor and Multi-Tool Synthesizer
-
-This script:
-1. Extracts single-tool data (preserving multiple calls for same tool)
-2. Discards multi-tool samples (will be synthesized instead)  
-3. Synthesizes multi-tool samples with proper handling of same-tool multiple calls
-4. Outputs training-ready data
 """
 
 from datasets import load_dataset
